@@ -1,0 +1,63 @@
+<!doctype html>
+<!--
+  Pet Adoption Portal - frontend (service #1 of 15)
+  A static single-page app. Nginx serves these files as-is; there is no build step.
+  Routing is hash-based (#/pets, #/staff ...) so any static server works and
+  Kubernetes/NGINX never needs a SPA fallback rule.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pet Adoption Portal</title>
+  <meta name="description" content="Adopt a dog, cat, rabbit or bird from shelters across Bhutan.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Runtime config. In Kubernetes this file is replaced by a ConfigMap mount,
+       so the same image runs in dev and prod with different settings. -->
+  <script src="config.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#/" aria-label="Pet Adoption Portal home">
+        <span class="brand-flags" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="brand-name">Pet Adoption Portal</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav">Menu</button>
+      <nav id="nav" class="nav" aria-label="Main"></nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1"></main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p>Pet Adoption Portal, a DSO202 project at the College of Science and Technology, Royal University of Bhutan.</p>
+      <p class="footer-meta">
+        <span id="envBadge"></span>
+        <button class="linkish" id="openLog" type="button">Request log</button>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Developer drawer: shows every API call and which microservice answered it. -->
+  <aside class="drawer" id="logDrawer" aria-label="Request log" hidden>
+    <div class="drawer-head">
+      <h2>Request log</h2>
+      <button class="btn btn-quiet" id="closeLog" type="button">Close</button>
+    </div>
+    <p class="drawer-note">Each row is one call through the API gateway and the service that handled it. Events show which services consumed them.</p>
+    <ol id="logList" class="log-list"></ol>
+  </aside>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
