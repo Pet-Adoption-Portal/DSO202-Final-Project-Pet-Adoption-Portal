@@ -1,0 +1,16 @@
+{
+  "name": "@pet-portal/template",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Template microservice. Copy it with scripts/new-service.sh; do not deploy it.",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch --env-file-if-exists=.env src/index.js",
+    "migrate": "node src/migrate.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@pet-portal/common": "*"
+  }
+}

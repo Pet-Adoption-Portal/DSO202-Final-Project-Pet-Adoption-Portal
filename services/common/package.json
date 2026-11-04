@@ -1,0 +1,20 @@
+{
+  "name": "@pet-portal/common",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared building blocks every service uses: HTTP server, health, metrics, logs, auth headers, Postgres, Redis Streams, etcd registry",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "fastify": "^5.12.8",
+    "ioredis": "^5.11.1",
+    "pg": "^8.23.1",
+    "prom-client": "^15.1.3"
+  }
+}

@@ -1,0 +1,63 @@
+# Local development stack: the same backing services the cluster runs, on your laptop.
+#   docker compose up -d postgres redis etcd     # only the dependencies (run services with npm run dev)
+#   docker compose up -d --build                 # everything, including the template service
+# Kubernetes does NOT use this file; it is only for fast local work and tests.
+name: pet-portal
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: portal
+      POSTGRES_PASSWORD: portal
+      POSTGRES_DB: petportal
+    ports: ['5432:5432']
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U portal -d petportal']
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ['redis-server', '--appendonly', 'yes'] # keep streams across restarts
+    ports: ['6379:6379']
+    volumes: [redisdata:/data]
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      retries: 10
+
+  # One etcd member locally; the cluster runs three (proposal D4).
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.17
+    command:
+      - etcd
+      - --data-dir=/etcd-data
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://etcd:2379
+    ports: ['2379:2379']
+    volumes: [etcddata:/etcd-data]
+
+  # Catches emails from email-worker later; web inbox at http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:latest
+    ports: ['8025:8025', '1025:1025']
+
+  template:
+    build: { context: ./services, args: { SERVICE: template } }
+    environment:
+      DATABASE_URL: postgres://portal:portal@postgres:5432/petportal
+      REDIS_URL: redis://redis:6379
+      ETCD_ENDPOINTS: http://etcd:2379
+      LOG_LEVEL: info
+    ports: ['8090:8080']
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      etcd: { condition: service_started }
+
+volumes:
+  pgdata:
+  redisdata:
+  etcddata:

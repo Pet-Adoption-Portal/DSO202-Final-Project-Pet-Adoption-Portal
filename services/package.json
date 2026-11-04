@@ -1,0 +1,22 @@
+{
+  "name": "pet-portal-services",
+  "private": true,
+  "description": "Backend microservices for the Pet Adoption Portal (npm workspaces: one folder per service + shared common library)",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "common",
+    "template"
+  ],
+  "scripts": {
+    "test": "npm test --workspaces --if-present",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "globals": "^17.14.0"
+  }
+}
